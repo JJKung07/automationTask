@@ -35,7 +35,8 @@ export const registerLocator = {
   txt_firstName:      (page: Page) => page.getByTestId('input_textfield_input_register_first_name'),
   txt_lastName:       (page: Page) => page.getByTestId('input_textfield_input_register_last_name'),
   txt_phone:          (page: Page) => page.locator('#phone'), // same id in every language
-  field_phone:        (page: Page) => page.getByTestId('input_number_registration_phone_number'),
+  // UAT renders this test id wrapped in literal quotes ('...'), so match by substring
+  field_phone:        (page: Page) => page.locator('[data-testid*="input_number_registration_phone_number"]'),
   // ===== Register form: coupon =====
   lnk_useCoupon:      (page: Page) => page.getByTestId('input_button_registration_register_ticket_got_coupon'),
   txt_couponCode:     (page: Page) => page.getByTestId('input_text_registration_coupon_code'),
@@ -59,6 +60,7 @@ export const registerLocator = {
 
   // any message on the page that may show outside the form (e.g. a short-lived OTP error)
   lbl_message:        (page: Page, text: string) => page.getByText(text).first(),
+  btn_popupOk:        (page: Page) => page.getByRole('button', { name: 'OK', exact: true }),
 
   // ===== Create password =====
   section_createPassword: (page: Page) => page.locator('app-create-password'),

@@ -1,30 +1,56 @@
-# Playwright UI Automation (TypeScript)
+# empeo Register – Playwright UI Automation (TypeScript)
 
-## Structure
-| Folder | Contains | Not allowed |
-|---|---|---|
-| `locators/` | How to find elements (`getByRole`, `getByText`, xpath, ...) | Actions, test data |
-| `keywords/` | One class per page with `constructor(private page: Page)`: actions (`clickX`, `fillX`) and verifications (`verifyX`, holds the `expect` + expected values), built from locators | `page.locator` / `getBy*` / xpath |
-| `fixtures/` | `fixture.ts`: the only place that imports locators / keywords / test data. Exports `TestFixtures` (class whose constructor creates every keyword class, for specs), `locator` (for keywords), `testData` (per page, for specs). New page → import its 3 files, add the keyword as a property + `new` in the `TestFixtures` constructor, locator to `locator`, data to `testData` | Logic, locators, data values |
-| `tests/` | `TCS<no>_<whatItDoes>.spec.ts` (e.g. `TCS001_verifyRegisterPageUI.spec.ts`): `fixture = new TestFixtures(page)` in `beforeEach`, then `async () => {}` calling `fixture.<page>Keyword.<keyword>()` in a flat chain, sections split by comments | `expect`, locators, `test.step`, `locator` (import only `TestFixtures`, `testData` from `fixtures/fixture`) |
-| `test-data/` | Input data as `.json` (phone numbers, usernames, ...) | Expected results (header text, messages, ...) |
+ชุดทดสอบอัตโนมัติสำหรับหน้าสมัครทดลองใช้ empeo (UAT) ด้วย Playwright + TypeScript
+เว็บที่ทดสอบ: `https://portal.uat.gofive.co.th/Register/empeo` (ตั้งค่าใน `playwright.config.ts` → `use.baseURL`)
 
-Locator names must be unique across all pages (e.g. `lbl_privacyPolicyHeader`).
+## Test cases
+| ไฟล์ | รายละเอียด |
+|---|---|
+| `TCS001_verifyRegisterPageUI.spec.ts` | ตรวจสอบการแสดงผล UI หน้าสมัคร (ภาษาไทย) |
+| `TCS002_verifyRegisterPageUIEnglish.spec.ts` | ตรวจสอบการแสดงผล UI หน้าสมัคร (ภาษาอังกฤษ) |
+| `TCS003_registerWithCoupon.spec.ts` | สมัครทดลองใช้ด้วยโค้ดส่วนลด |
+| `TCS004_registerWithoutCoupon.spec.ts` | สร้างบัญชีโดยไม่ใช้โค้ดส่วนลด |
+| `TCS005_validateRegisterFields.spec.ts` | ตรวจสอบ validation และ error handling ของการสมัคร |
+| `TCS006_registerOffline.spec.ts` | สมัครไม่สำเร็จเมื่ออินเทอร์เน็ตขาดการเชื่อมต่อ |
 
-## Commands
+รายละเอียด test case แบบ manual (ขั้นตอน, ผลลัพธ์ที่คาดหวัง, priority) อยู่ใน `Book 1(Sheet1).csv`
+
+## การติดตั้งและรัน
+ต้องมี Node.js
+
 ```
 npm install
 npx playwright install chromium
-npm test              # run all tests
-npm run test:headed   # run with browser visible
-npm run report        # open the HTML report
-npm run typecheck
+npm test                                   # รันทั้งหมด
+npx playwright test tests/TCS003_registerWithCoupon.spec.ts   # รันไฟล์เดียว
+npx playwright test --workers=1            # รันทีละ test ไม่ขนานกัน
+npm run test:headed                        # รันแบบเห็น browser
+npm run report                             # เปิด HTML report
+npm run typecheck                          # ตรวจ type
 ```
 
-Set the site under test in `playwright.config.ts` → `use.baseURL`.
+- รันบนเครื่อง: เปิด browser ให้เห็น (headed) / บน CI (`CI` env): headless และ retry 2 ครั้ง
+- `actionTimeout` 15 วินาที, เก็บ screenshot เมื่อ fail และ trace เมื่อ retry
 
-## Locator naming: `elementType_name` (camelCase name)
-| Prefix | Element | Example |
+## โครงสร้างโปรเจกต์
+| Folder | เก็บอะไร | ห้ามมี |
+|---|---|---|
+| `locators/` | วิธีหา element (`getByRole`, `getByText`, xpath, ...) | action, test data |
+| `keywords/` | 1 class ต่อ 1 หน้า `constructor(private page: Page)`: action (`clickX`, `fillX`) และ verification (`verifyX` ที่มี `expect` + ค่าที่คาดหวัง) สร้างจาก locator | `page.locator` / `getBy*` / xpath |
+| `fixtures/` | `fixture.ts`: ที่เดียวที่ import locator / keyword / test data. Export `TestFixtures` (สร้าง keyword ทุกตัว ใช้ใน spec), `locator` (ใช้ใน keyword), `testData` (แยกตามหน้า ใช้ใน spec) | logic, locator, ค่า data |
+| `tests/` | `TCS<no>_<whatItDoes>.spec.ts`: สร้าง `fixture = new TestFixtures(page)` ใน `beforeEach` แล้วเรียก `fixture.<page>Keyword.<keyword>()` เรียงกันตรงๆ แบ่ง section ด้วย comment | `expect`, locator, `test.step` (import แค่ `TestFixtures`, `testData` จาก `fixtures/fixture`) |
+| `test-data/` | ข้อมูล input เป็น `.json` (เบอร์โทร, email, ...) | ผลลัพธ์ที่คาดหวัง (header, message, ...) |
+
+`{timestamp}` ใน `test-data/register.data.json` จะถูกแทนด้วยเวลาปัจจุบันตอนรัน เพื่อให้ email / ชื่อบริษัทไม่ซ้ำกัน
+
+### เพิ่มหน้าใหม่
+1. สร้าง `locators/<page>.locator.ts`, `keywords/<page>.keyword.ts` และ (ถ้ามี) `test-data/<page>.data.json`
+2. ใน `fixtures/fixture.ts`: import ทั้ง 3 ไฟล์, เพิ่ม keyword เป็น property + `new` ใน constructor ของ `TestFixtures`, เพิ่ม locator ใน `locator`, data ใน `testData`
+
+## การตั้งชื่อ locator: `elementType_name` (name เป็น camelCase)
+ชื่อ locator ต้องไม่ซ้ำกันทุกหน้า (เช่น `lbl_privacyPolicyHeader`)
+
+| Prefix | Element | ตัวอย่าง |
 |---|---|---|
 | `btn_` | button | `btn_tryForFree` |
 | `txt_` | text input | `txt_email` |

@@ -199,6 +199,15 @@ export class RegisterKeyword {
   async clearOtp() {
     for (let i = 0; i < 6; i++) await locator.txt_otpDigit(this.page).nth(i).fill('');
   }
+  async goOffline() {
+    await this.page.context().setOffline(true);
+  }
+  async goOnline() {
+    await this.page.context().setOffline(false);
+  }
+  async closeErrorPopup() {
+    await locator.btn_popupOk(this.page).click();
+  }
   async clickVerifyOtp() {
     await locator.btn_verifyOtp(this.page).click();
   }
@@ -365,6 +374,14 @@ export class RegisterKeyword {
   async verifyOtpIncomplete(typed: string) {
     await expect.poll(() => locator.txt_otpDigit(this.page).evaluateAll((els) => els.map((e) => (e as HTMLInputElement).value).join(''))).toBe(typed);
     await expect(locator.btn_verifyOtp(this.page)).toBeDisabled();
+  }
+  async verifyConnectionError() {
+    await expect(locator.lbl_message(this.page, 'Error!')).toBeVisible();
+    await expect(locator.lbl_message(this.page, 'Oops...')).toBeVisible();
+  }
+  // current site behavior: set password while offline opens "Page not found" and the passwords are lost (TC-06 expects an error and the passwords kept)
+  async verifyPageNotFound() {
+    await expect(locator.lbl_message(this.page, 'Page not found')).toBeVisible();
   }
   // the message only shows for a moment, so call this right after clickVerifyOtp
   async verifyOtpIncorrect() {
