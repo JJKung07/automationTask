@@ -15,6 +15,9 @@
 
 รายละเอียด test case แบบ manual (ขั้นตอน, ผลลัพธ์ที่คาดหวัง, priority) อยู่ใน `Book 1(Sheet1).csv`
 
+- 📄 Test cases (Excel): https://1drv.ms/x/c/6af2efdcca1e7fdc/IQCVefDyutZpSpS78j2DFCv5AUALs5RlO-f6A5rtwogu-fg?e=BDxriW
+- 🎥 วิดีโอตอนทดสอบ: https://drive.google.com/drive/folders/16_kN3vDc7IwzKy5W_p8cf3s6blTR8Q8D?usp=drive_link
+
 ## การติดตั้งและรัน
 ต้องมี Node.js
 
