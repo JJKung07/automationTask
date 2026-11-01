@@ -8,6 +8,7 @@ export default defineConfig({
   use: {
     baseURL: 'https://portal.uat.gofive.co.th/Register/empeo',
     headless: !!process.env.CI, // show the browser locally; CI has no display
+    actionTimeout: 15000, // a stuck click fails in 15s with its line instead of hanging until the test timeout
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },

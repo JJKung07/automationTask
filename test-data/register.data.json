@@ -1,9 +1,58 @@
 {
   "language": "English",
-  "contactInfo": {
-    "email": "qa.empeo@test.com",
-    "firstName": "ทดสอบ",
-    "lastName": "อัตโนมัติ",
-    "phone": "0967690708"
+  "registration": {
+    "taxId": "0745561010054",
+    "companyName": "บริษัท จิรภัทรเอ็กแซม {timestamp} จำกัด",
+    "businessType": "เทคโนโลยี",
+    "userAmount": "1-20",
+    "contactInfo": {
+      "email": "jiraphat.interviewexam{timestamp}@gmail.com",
+      "firstName": "จิรภัทร",
+      "lastName": "ละมูล",
+      "phone": "0967690708"
+    },
+    "couponCode": "FREE15DAY",
+    "otp": "123456",
+    "password": "123456ZZzz"
+  },
+  "validation": {
+    "spaces": "   ",
+    "invalidEmails": [
+      "abc",
+      "abc@",
+      "abc@test",
+      "a b@test.com",
+      "abc@@test.com"
+    ],
+    "taxIds": [
+      "zzzzzz",
+      "123456789012",
+      "12345678901234",
+      "1234567890123"
+    ],
+    "phones": [
+      "096769070",
+      "09676907081",
+      "0267690708",
+      "09676907ab"
+    ],
+    "registeredEmail": "jiraphat.qaexam+1793557375492@gmail.com",
+    "invalidCoupons": [
+      "FREE15DA",
+      "FREE15DAYS",
+      "FREE16DAY"
+    ],
+    "incompleteOtp": "12345",
+    "wrongOtp": "123455",
+    "invalidPasswords": [
+      "Test123",
+      "test1234",
+      "TEST1234",
+      "Testtest"
+    ],
+    "mismatchPassword": {
+      "password": "Test1234",
+      "confirmPassword": "Test1235"
+    }
   }
 }

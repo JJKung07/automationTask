@@ -1,34 +1,41 @@
-import { test, testData } from '../fixtures/fixture';
+import { test } from '@playwright/test';
+import { TestFixtures } from '../fixtures/fixture';
 
 test.describe('Register empeo', () => {
-  test('TCS001 - ตรวจสอบการแสดงผล UI หน้าสมัคร (ภาษาไทย)', async ({ registerKeyword, privacyPolicyKeyword, termsAndConditionsKeyword }) => {
+  let fixture: TestFixtures;
+
+  test.beforeEach(async ({ page }) => {
+    fixture = new TestFixtures(page);
+  });
+
+  test('TCS001 - ตรวจสอบการแสดงผล UI หน้าสมัคร (ภาษาไทย)', async () => {
     // ===== Open page & verify UI =====
-    await registerKeyword.openRegisterPage();
-    await registerKeyword.verifyHeaderSection();
-    await registerKeyword.verifyRegisterForm();
+    await fixture.registerKeyword.openRegisterPage();
+    await fixture.registerKeyword.verifyHeaderSection();
+    await fixture.registerKeyword.verifyRegisterForm();
 
     // ===== Coupon =====
-    await registerKeyword.clickUseCoupon();
-    await registerKeyword.verifyCouponInputDisplayed();
+    await fixture.registerKeyword.clickUseCoupon();
+    await fixture.registerKeyword.verifyCouponInputDisplayed();
 
     // ===== Switch company type =====
-    await registerKeyword.selectCompanyOthers();
-    await registerKeyword.verifyCompanyNameFieldDisplayed();
-    await registerKeyword.selectCompanyThai();
-    await registerKeyword.verifyTaxIdFieldDisplayed();
+    await fixture.registerKeyword.selectCompanyOthers();
+    await fixture.registerKeyword.verifyCompanyNameFieldDisplayed();
+    await fixture.registerKeyword.selectCompanyThai();
+    await fixture.registerKeyword.verifyTaxIdFieldDisplayed();
 
     // ===== Privacy Policy (new tab) =====
-    await registerKeyword.clickPrivacyPolicy();
-    await privacyPolicyKeyword.verifyPrivacyPolicyHeader();
-    await privacyPolicyKeyword.closePrivacyPolicyPage();
+    await fixture.registerKeyword.clickPrivacyPolicy();
+    await fixture.privacyPolicyKeyword.verifyPrivacyPolicyHeader();
+    await fixture.privacyPolicyKeyword.closePrivacyPolicyPage();
 
     // ===== Terms and Conditions (new tab) =====
-    await registerKeyword.clickTermAndCondition();
-    await termsAndConditionsKeyword.verifyTermAndConditionHeader();
-    await termsAndConditionsKeyword.closeTermAndConditionPage();
+    await fixture.registerKeyword.clickTermAndCondition();
+    await fixture.termsAndConditionsKeyword.verifyTermAndConditionHeader();
+    await fixture.termsAndConditionsKeyword.closeTermAndConditionPage();
 
     // ===== Bottom section =====
-    await registerKeyword.scrollToBottom();
-    await registerKeyword.verifyBottomSection();
+    await fixture.registerKeyword.scrollToBottom();
+    await fixture.registerKeyword.verifyBottomSection();
   });
 });

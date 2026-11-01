@@ -5,11 +5,11 @@
 |---|---|---|
 | `locators/` | How to find elements (`getByRole`, `getByText`, xpath, ...) | Actions, test data |
 | `keywords/` | One class per page with `constructor(private page: Page)`: actions (`clickX`, `fillX`) and verifications (`verifyX`, holds the `expect` + expected values), built from locators | `page.locator` / `getBy*` / xpath |
-| `fixtures/` | `fixture.ts`: the only place that imports locators / keywords / test data. Exports `test` (each keyword class as a Playwright fixture), `locator` (for keywords), `testData` (per page, for specs). New page → import its 3 files, add the keyword to `Fixtures` + `base.extend`, locator to `locator`, data to `testData` | Logic, locators, data values |
-| `tests/` | `TCS<no>_<whatItDoes>.spec.ts` (e.g. `TCS001_verifyRegisterPageUI.spec.ts`): `async ({ registerKeyword, ... }) => {}` calling keywords in a flat chain, sections split by comments | `expect`, locators, `test.step`, `locator` (import only `test`, `testData` from `fixtures/fixture`) |
+| `fixtures/` | `fixture.ts`: the only place that imports locators / keywords / test data. Exports `TestFixtures` (class whose constructor creates every keyword class, for specs), `locator` (for keywords), `testData` (per page, for specs). New page → import its 3 files, add the keyword as a property + `new` in the `TestFixtures` constructor, locator to `locator`, data to `testData` | Logic, locators, data values |
+| `tests/` | `TCS<no>_<whatItDoes>.spec.ts` (e.g. `TCS001_verifyRegisterPageUI.spec.ts`): `fixture = new TestFixtures(page)` in `beforeEach`, then `async () => {}` calling `fixture.<page>Keyword.<keyword>()` in a flat chain, sections split by comments | `expect`, locators, `test.step`, `locator` (import only `TestFixtures`, `testData` from `fixtures/fixture`) |
 | `test-data/` | Input data as `.json` (phone numbers, usernames, ...) | Expected results (header text, messages, ...) |
 
-Keyword and locator names must be unique across all pages (e.g. `closePrivacyPolicyPage`, `lbl_privacyPolicyHeader`).
+Locator names must be unique across all pages (e.g. `lbl_privacyPolicyHeader`).
 
 ## Commands
 ```
